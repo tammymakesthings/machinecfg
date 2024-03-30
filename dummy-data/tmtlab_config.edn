@@ -1,0 +1,42 @@
+{
+ :profile-name "tmtlab"
+ :description  "Provisioning Profile for tmtlab"
+
+ :host-type :linux
+ :os-type   :debian
+
+ :reboot-after-provisioning? true
+ :simulated-run? true
+ :extra-cautious? true
+
+ :connect-via :ssh
+ :host-name "tmtlab.tammymakesthings.com"
+ :provisioning-user "root"
+ :provisioning-password "root-password"
+ :provisioning-ssh-key "/home/tammy/.ssh/id_rsa"
+
+ :preconditions [
+                 {:ensure-hostname}
+                 {:ensure-directory-exists :directory "/home"}
+                 {:ensure-directory-exists :directory "/root/.ssh"}
+                 {:copy-files :from "/home/tammy/.ssh/id_*" 
+                              :to "/root/.ssh/id_rsa" 
+                              :overwrite? true}
+                 ]
+
+ :actions [
+           {:update-apt-repository}
+           {:install-packages :packages ["build-essential git aptitude"]}
+           {:create-user :login "tammy" :full-name "Tammy Cravit" :home-dir "/home/tammy"}
+           {:copy-files :from "/home/tammy/.ssh/" :to "/home/tammy/.ssh" :owner "tammy"}
+           {:git-clone :repo "git@github.com/tammymakesthings/machinecfg" 
+                       :to "/home/tammy/projects/machinecfg" 
+                       :owner "tammy"}
+           {:install-packages :packages ["zsh-dev"]}
+           {:change-user-shell :user "tammy" :path "/usr/bin/zsh"}
+           {:set-file-content :path "/home/tammy/.zshrc" 
+                              :from-local-file "/home/tammy/.zshrc" 
+                              :overwrite? true}
+           ]
+}
+
