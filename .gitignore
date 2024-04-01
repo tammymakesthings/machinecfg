@@ -12,3 +12,5 @@ pom.xml.asc
 .hgignore
 .hg/
 **/.rebel-readline-history
+.clj-condo/
+.lsp/
